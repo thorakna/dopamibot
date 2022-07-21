@@ -6,16 +6,27 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bwmarin/discordgo"
+	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
-func main() {
-	var Session, _ = discordgo.New()
-	Session.Token = ""
+func goDotEnvVariable(key string) string {
+	// load .env file
+	err := godotenv.Load(".env")
 
-	err := Session.Open()
 	if err != nil {
-		log.Printf("Error establisihng connection to Discord, %s\n", err)
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
+}
+
+func main() {
+	godotenv.Load()
+	var Session, err = discordgo.New("Bot " + goDotEnvVariable("DCTOKEN"))
+
+	if err != nil {
+		log.Printf("Error establishing connection to Discord, %s\n", err)
 		os.Exit(1)
 	}
 
