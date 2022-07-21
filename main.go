@@ -1,10 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -22,20 +21,16 @@ func goDotEnvVariable(key string) string {
 }
 
 func main() {
-	godotenv.Load()
-	var Session, err = discordgo.New("Bot " + goDotEnvVariable("DCTOKEN"))
-
+	discord, err := discordgo.New(goDotEnvVariable("DCTOKEN"))
 	if err != nil {
-		log.Printf("Error establishing connection to Discord, %s\n", err)
-		os.Exit(1)
+		fmt.Println("Error creating discord session,", err)
+		return
 	}
-
-	log.Printf("Now running, press Ctrl + C to exit.")
-	sc := make(chan os.Signal, 1)
-
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
-
-	// Clean up
-	Session.Close()
+	err = discord.Open()
+	if err != nil {
+		fmt.Println("Error opening connection,", err)
+		return
+	}
+	fmt.Println("Started")
+	<-make(chan struct{})
 }
