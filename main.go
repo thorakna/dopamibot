@@ -1,6 +1,7 @@
 package main
 
 func main() {
+
 	ConnectToDiscord()
 
 	// start := time.Now()
@@ -12,6 +13,5 @@ func main() {
 	// if err != nil {
 	// 	return
 	// }
-
-	// fmt.Println(*opusUrl)
+  
 }
