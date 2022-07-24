@@ -1,7 +1,6 @@
 package main
 
 func main() {
-
 	ConnectToDiscord()
 
 	// start := time.Now()
@@ -13,5 +12,12 @@ func main() {
 	// if err != nil {
 	// 	return
 	// }
-  
+	// fmt.Println("Started")
+	// <-make(chan struct{})
+
+	// opusUrl, err := stream.GetStreamFromSCWithId(utils.SCUrlToId("https://soundcloud.com/orhun-en-914377433/bossy-bitmez-dertlerim"))
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(*opusUrl)
 }

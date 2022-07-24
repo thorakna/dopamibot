@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -50,11 +52,55 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Content == "dpmhelp" {
-		_, err := s.ChannelMessageSend(m.ChannelID, "I have nothing to offer but the storm that is approacting... yet.")
+	if strings.HasPrefix(m.Content, "dpm") {
+		// Find the channel that the message came from.
+		c, err := s.State.Channel(m.ChannelID)
 		if err != nil {
-			fmt.Println("error sending message:", err)
+			// Could not find channel.
+			return
+		}
+
+		if m.Content == "dpmhelp" {
+			_, err := s.ChannelMessageSend(m.ChannelID, "I have nothing to offer but the storm that is approacting... yet.")
+			if err != nil {
+				fmt.Println("error sending message:", err)
+			}
+		} else if m.Content == "dpmjoin" {
+			// Find the guild for that channel.
+			g, err := s.State.Guild(c.GuildID)
+			if err != nil {
+				// Could not find guild.
+				return
+			}
+
+			// Look for the message sender in that guild's current voice states.
+			for _, vs := range g.VoiceStates {
+				if vs.UserID == m.Author.ID {
+					err = playSound(s, g.ID, vs.ChannelID)
+					if err != nil {
+						fmt.Println("Error playing sound:", err)
+					}
+
+					return
+				}
+			}
 		}
 	}
+}
 
+func playSound(s *discordgo.Session, guildID, channelID string) (err error) {
+	// Join the provided voice channel.
+	vc, err := s.ChannelVoiceJoin(guildID, channelID, false, true)
+	if err != nil {
+		return err
+	}
+
+	vc.Speaking(true)
+
+	// Sleep for a specified amount of time before playing the sound
+	time.Sleep(3000 * time.Millisecond)
+	vc.Speaking(false)
+	vc.Disconnect()
+
+	return nil
 }
