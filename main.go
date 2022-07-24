@@ -2,6 +2,7 @@ package main
 
 import (
 	"dpmmusicbot/stream"
+	"dpmmusicbot/utils"
 	"fmt"
 )
 
@@ -19,7 +20,7 @@ func main() {
 	// fmt.Println("Started")
 	// <-make(chan struct{})
 
-	opusUrl, err := stream.GetStreamFromYT("Bury the light")
+	opusUrl, err := stream.GetStreamFromSCWithId(utils.SCUrlToId("https://soundcloud.com/orhun-en-914377433/bossy-bitmez-dertlerim"))
 	if err != nil {
 		fmt.Println(err)
 	}
