@@ -3,7 +3,6 @@ package main
 import (
 	"dpmmusicbot/stream"
 	"fmt"
-	"time"
 )
 
 func main() {
@@ -19,15 +18,10 @@ func main() {
 	// }
 	// fmt.Println("Started")
 	// <-make(chan struct{})
-	start := time.Now()
-	videoId, err := stream.YTSearchWithAPI("Fiyakalı Yok oluşlar")
-	fmt.Printf("YT Search took %s\n", time.Since(start))
-	opusUrl, err := stream.GetUrlFromYTWithId(videoId)
-	fmt.Printf("YT Opus link extracting took %s\n\n", time.Since(start))
 
+	opusUrl, err := stream.GetStreamFromYT("Bury the light")
 	if err != nil {
-		return
+		fmt.Println(err)
 	}
-
 	fmt.Println(*opusUrl)
 }
